@@ -186,53 +186,92 @@ const Live = () => {
       onPointerLeave={onPointerLeave}
       onPointerDown={onPointerDown}
       onPointerUp={onPointerUp}
+      style={{ cursor: "none" }}
     >
-      {/* show reactions on the screen */}
-      {reactions.map((reaction) => {
-        return (
-          <FlyingReaction
-            key={reaction.timestamp.toString()}
-            x={reaction.point.x}
-            y={reaction.point.y}
-            timestamp={reaction.timestamp}
-            value={reaction.value}
-          />
-        );
-      })}
+      {
+        /* show custom cursor */
+        cursor && (
+          <div
+            className="absolute top-0 left-0"
+            style={{
+              transform: `translateX(${cursor.x}px) translateY(${cursor.y}px)`,
+            }}
+          >
+            <svg
+              className="relative"
+              width="24"
+              height="36"
+              viewBox="0 0 24 36"
+              fill="none"
+              stroke="#fff"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M5.65376 12.3673H5.46026L5.31717 12.4976L0.500002 16.8829L0.500002 1.19841L11.7841 12.3673H5.65376Z"
+                fill="#000"
+              />
+            </svg>
+          </div>
+        )
+      }
 
-      {cursor && (
-        <div
-          className="absolute top-0 left-0"
-          style={{
-            transform: `translateX(${cursor.x}px) translateY(${cursor.y}px)`,
-          }}
-        >
-          {/* display the chat input next to the user's cursor */}
-          {state.mode === CursorMode.Chat && (
-            <CursorChat
-              state={state}
-              updateMyPresence={updateMyPresence}
-              setState={setState}
+      {
+        /* show reactions on the screen */
+        reactions.map((reaction) => {
+          return (
+            <FlyingReaction
+              key={reaction.timestamp.toString()}
+              x={reaction.point.x}
+              y={reaction.point.y}
+              timestamp={reaction.timestamp}
+              value={reaction.value}
             />
-          )}
+          );
+        })
+      }
 
-          {/* display the reaction selector at the user's cursor */}
-          {state.mode === CursorMode.ReactionSelector && (
-            <ReactionSelector
-              setReaction={(reaction) => {
-                setReaction(reaction);
-              }}
-            />
-          )}
+      {
+        /* show the chat input and the reaction selector in the respective cursor modes */
+        cursor && (
+          <div
+            className="absolute top-0 left-0"
+            style={{
+              transform: `translateX(${cursor.x}px) translateY(${cursor.y}px)`,
+            }}
+          >
+            {
+              /* display the chat input next to the user's cursor */
+              state.mode === CursorMode.Chat && (
+                <CursorChat
+                  state={state}
+                  updateMyPresence={updateMyPresence}
+                  setState={setState}
+                />
+              )
+            }
 
-          {/* display the reaction selected next to the user's cursor */}
-          {state.mode === CursorMode.Reaction && (
-            <div className="pointer-events-none absolute top-3.5 left-1 select-none">
-              {state.reaction}
-            </div>
-          )}
-        </div>
-      )}
+            {
+              /* display the reaction selector at the user's cursor */
+              state.mode === CursorMode.ReactionSelector && (
+                <ReactionSelector
+                  setReaction={(reaction) => {
+                    setReaction(reaction);
+                  }}
+                />
+              )
+            }
+
+            {
+              /* display the reaction selected next to the user's cursor */
+              state.mode === CursorMode.Reaction && (
+                <div className="pointer-events-none absolute top-3.5 left-1 select-none">
+                  {state.reaction}
+                </div>
+              )
+            }
+          </div>
+        )
+      }
 
       {/* show other people's cursors */}
       <OthersCursors others={others} />

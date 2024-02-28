@@ -1,4 +1,5 @@
 import { CursorChatProps, CursorMode, CursorState } from "@/types/type";
+import Image from "next/image";
 import React from "react";
 
 const CursorChat = ({ state, updateMyPresence, setState }: CursorChatProps) => {
