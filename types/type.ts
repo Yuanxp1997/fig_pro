@@ -8,23 +8,17 @@ export enum CursorMode {
   Reaction,
 }
 
-export type CursorState =
-  | {
-      mode: CursorMode.Hidden;
-    }
-  | {
-      mode: CursorMode.Chat;
-      message: string;
-      previousMessage: string | null;
-    }
-  | {
-      mode: CursorMode.ReactionSelector;
-    }
-  | {
-      mode: CursorMode.Reaction;
-      reaction: string;
-      isPressed: boolean;
-    };
+export type CursorState = {
+  mode:
+    | CursorMode.Hidden
+    | CursorMode.Chat
+    | CursorMode.ReactionSelector
+    | CursorMode.Reaction;
+  message: string;
+  previousMessage: string | null;
+  reaction: string;
+  isPressed: boolean;
+};
 
 export type Reaction = {
   value: string;
@@ -179,9 +173,8 @@ export type RenderCanvas = {
 };
 
 export type CursorChatProps = {
-  cursor: { x: number; y: number };
-  cursorState: CursorState;
-  setCursorState: (cursorState: CursorState) => void;
+  state: CursorState;
+  setState: (cursorState: CursorState) => void;
   updateMyPresence: (
     presence: Partial<{
       cursor: { x: number; y: number };

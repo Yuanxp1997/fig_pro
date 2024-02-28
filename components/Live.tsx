@@ -6,13 +6,13 @@ import {
   useOthers,
 } from "@/liveblocks.config";
 import React, { PointerEvent, useCallback, useEffect, useState } from "react";
-import { COLORS } from "@/constants";
-import Cursor from "./cursor/Cursor";
+
 import OthersCursors from "./cursor/OthersCursors";
 import { CursorMode, CursorState, Reaction, ReactionEvent } from "@/types/type";
 import useInterval from "@/hooks/useInterval";
 import FlyingReaction from "./reaction/FlyingReactions";
 import ReactionSelector from "./reaction/ReactionSelector";
+import CursorChat from "./cursor/CursorChat";
 
 const Live = () => {
   /**
@@ -32,14 +32,25 @@ const Live = () => {
   const broadcast = useBroadcastEvent();
 
   // Cursor state that will be used to display the cursor and the reaction selector
-  const [state, setState] = useState<CursorState>({ mode: CursorMode.Hidden });
+  const [state, setState] = useState<CursorState>({
+    mode: CursorMode.Hidden,
+    message: "",
+    previousMessage: null,
+    reaction: "",
+    isPressed: false,
+  });
 
   // Reactions array that will be used to display the reactions
   const [reactions, setReactions] = useState<Reaction[]>([]);
 
   // Set the cursor state to the reaction selector mode
   const setReaction = useCallback((reaction: string) => {
-    setState({ mode: CursorMode.Reaction, reaction, isPressed: false });
+    setState((prev) => ({
+      ...prev,
+      mode: CursorMode.Reaction,
+      reaction,
+      isPressed: false,
+    }));
   }, []);
 
   // Remove reactions that are not visible anymore (every 1 sec)
@@ -48,7 +59,6 @@ const Live = () => {
       reactions.filter((reaction) => reaction.timestamp > Date.now() - 4000)
     );
   }, 1000);
-
   // If the cursor is in reaction mode and the mouse is pressed,
   // add a reaction to the reactions array and broadcast it to the other users every 100ms
   useInterval(() => {
@@ -74,16 +84,17 @@ const Live = () => {
   useEffect(() => {
     function onKeyUp(e: KeyboardEvent) {
       if (e.key === "/") {
-        setState({
+        setState((prev) => ({
+          ...prev,
           mode: CursorMode.Chat,
           previousMessage: null,
           message: "",
-        });
+        }));
       } else if (e.key === "Escape") {
         updateMyPresence({ message: "" });
-        setState({ mode: CursorMode.Hidden });
+        setState((prev) => ({ ...prev, mode: CursorMode.Hidden }));
       } else if (e.key === "e") {
-        setState({ mode: CursorMode.ReactionSelector });
+        setState((prev) => ({ ...prev, mode: CursorMode.ReactionSelector }));
       }
     }
     window.addEventListener("keyup", onKeyUp);
@@ -119,6 +130,10 @@ const Live = () => {
     // set the cursor mode to hidden
     setState({
       mode: CursorMode.Hidden,
+      message: "",
+      previousMessage: null,
+      reaction: "",
+      isPressed: false,
     });
     // set cursor to null
     updateMyPresence({
@@ -150,6 +165,20 @@ const Live = () => {
         : state
     );
   };
+
+  // Listen to reaction events broadcasted by other users and add them to the reactions array
+  useEventListener((eventData) => {
+    const event = eventData.event as ReactionEvent;
+    setReactions((reactions) =>
+      reactions.concat([
+        {
+          point: { x: event.x, y: event.y },
+          value: event.value,
+          timestamp: Date.now(),
+        },
+      ])
+    );
+  });
   return (
     <main
       className="h-[100vh] w-full text-white flex items-center justify-center "
@@ -158,6 +187,7 @@ const Live = () => {
       onPointerDown={onPointerDown}
       onPointerUp={onPointerUp}
     >
+      {/* show reactions on the screen */}
       {reactions.map((reaction) => {
         return (
           <FlyingReaction
@@ -177,6 +207,16 @@ const Live = () => {
             transform: `translateX(${cursor.x}px) translateY(${cursor.y}px)`,
           }}
         >
+          {/* display the chat input next to the user's cursor */}
+          {state.mode === CursorMode.Chat && (
+            <CursorChat
+              state={state}
+              updateMyPresence={updateMyPresence}
+              setState={setState}
+            />
+          )}
+
+          {/* display the reaction selector at the user's cursor */}
           {state.mode === CursorMode.ReactionSelector && (
             <ReactionSelector
               setReaction={(reaction) => {
@@ -184,6 +224,8 @@ const Live = () => {
               }}
             />
           )}
+
+          {/* display the reaction selected next to the user's cursor */}
           {state.mode === CursorMode.Reaction && (
             <div className="pointer-events-none absolute top-3.5 left-1 select-none">
               {state.reaction}
@@ -192,12 +234,7 @@ const Live = () => {
         </div>
       )}
 
-      <div>
-        {cursor
-          ? `${cursor.x} × ${cursor.y}`
-          : "Move your cursor to broadcast its position to other people in the room."}
-      </div>
-
+      {/* show other people's cursors */}
       <OthersCursors others={others} />
     </main>
   );
