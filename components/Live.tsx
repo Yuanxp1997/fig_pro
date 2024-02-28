@@ -59,6 +59,7 @@ const Live = () => {
       reactions.filter((reaction) => reaction.timestamp > Date.now() - 4000)
     );
   }, 1000);
+
   // If the cursor is in reaction mode and the mouse is pressed,
   // add a reaction to the reactions array and broadcast it to the other users every 100ms
   useInterval(() => {
