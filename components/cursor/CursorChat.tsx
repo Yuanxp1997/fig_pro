@@ -2,9 +2,19 @@ import { CursorChatProps, CursorMode, CursorState } from "@/types/type";
 import Image from "next/image";
 import React from "react";
 
-const CursorChat = ({ state, updateMyPresence, setState }: CursorChatProps) => {
+const CursorChat = ({
+  cursor,
+  state,
+  updateMyPresence,
+  setState,
+}: CursorChatProps) => {
   return (
-    <>
+    <div
+      className="absolute top-0 left-0"
+      style={{
+        transform: `translateX(${cursor.x}px) translateY(${cursor.y}px)`,
+      }}
+    >
       <div
         className="absolute top-5 left-2 bg-blue-500 px-4 py-2 text-sm leading-relaxed text-white"
         onKeyUp={(e) => e.stopPropagation()}
@@ -48,7 +58,7 @@ const CursorChat = ({ state, updateMyPresence, setState }: CursorChatProps) => {
           maxLength={50}
         />
       </div>
-    </>
+    </div>
   );
 };
 
