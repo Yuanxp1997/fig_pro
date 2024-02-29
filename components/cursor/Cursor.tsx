@@ -4,15 +4,17 @@ type Props = {
   color: string;
   x: number;
   y: number;
+  z: number;
   message?: string;
 };
 
-export default function Cursor({ color, x, y, message }: Props) {
+export default function Cursor({ color, x, y, z, message }: Props) {
   return (
     <div
       className="pointer-events-none absolute top-0 left-0"
       style={{
         transform: `translateX(${x}px) translateY(${y}px)`,
+        zIndex: z,
       }}
     >
       <svg

@@ -14,6 +14,7 @@ const OthersCursors = ({ others }: LiveCursorProps) => {
 
     return (
       <Cursor
+        z={0}
         key={connectionId}
         color={COLORS[connectionId % COLORS.length]}
         x={presence.cursor.x}

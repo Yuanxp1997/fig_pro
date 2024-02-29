@@ -16,6 +16,7 @@ import CursorChat from "./cursor/CursorChat";
 import Cursor from "./cursor/Cursor";
 import Reactions from "./reaction/Reactions";
 import ReactionIndicator from "./reaction/ReactionIndicator";
+import InteractionInstructions from "./InteractionInstructions";
 
 const Live = () => {
   /**
@@ -142,6 +143,7 @@ const Live = () => {
     // set cursor to null
     updateMyPresence({
       cursor: null,
+      message: "",
     });
   };
 
@@ -194,7 +196,9 @@ const Live = () => {
     >
       {
         /* show my custom cursor */
-        cursor && <Cursor color="black" x={cursor.x} y={cursor.y} message="" />
+        cursor && (
+          <Cursor color="black" x={cursor.x} y={cursor.y} z={100} message="" />
+        )
       }
 
       {
@@ -233,6 +237,7 @@ const Live = () => {
         /* show reactions on the screen */
         <Reactions reactions={reactions} />
       }
+      <InteractionInstructions />
     </main>
   );
 };
