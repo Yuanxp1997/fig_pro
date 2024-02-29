@@ -6,11 +6,9 @@ import {
   useOthers,
 } from "@/liveblocks.config";
 import React, { PointerEvent, useCallback, useEffect, useState } from "react";
-
 import OthersCursors from "./cursor/OthersCursors";
 import { CursorMode, CursorState, Reaction, ReactionEvent } from "@/types/type";
 import useInterval from "@/hooks/useInterval";
-import FlyingReaction from "./reaction/FlyingReactions";
 import ReactionSelector from "./reaction/ReactionSelector";
 import CursorChat from "./cursor/CursorChat";
 import Cursor from "./cursor/Cursor";
@@ -116,22 +114,24 @@ const Live = () => {
   }, [updateMyPresence]);
 
   // When the pointer moves
-  const onPointerMove = (event: PointerEvent) => {
-    // Prevent the default behavior of the pointer event to avoid scrolling
-    event.preventDefault();
-    // If the cursor is not in reaction selector mode, update the cursor position
-    if (cursor == null || state.mode !== CursorMode.ReactionSelector) {
-      updateMyPresence({
-        cursor: {
-          x: Math.round(event.clientX),
-          y: Math.round(event.clientY),
-        },
-      });
-    }
-  };
-
+  const onPointerMove = useCallback(
+    (event: PointerEvent) => {
+      // Prevent the default behavior of the pointer event to avoid scrolling
+      event.preventDefault();
+      // If the cursor is not in reaction selector mode, update the cursor position
+      if (state.mode !== CursorMode.ReactionSelector) {
+        updateMyPresence({
+          cursor: {
+            x: Math.round(event.clientX),
+            y: Math.round(event.clientY),
+          },
+        });
+      }
+    },
+    [updateMyPresence, state.mode]
+  );
   // When the pointer leaves the window
-  const onPointerLeave = () => {
+  const onPointerLeave = useCallback(() => {
     // set the cursor mode to hidden
     setState({
       mode: CursorMode.Hidden,
@@ -145,32 +145,37 @@ const Live = () => {
       cursor: null,
       message: "",
     });
-  };
+  }, [updateMyPresence]);
 
   // When the pointer is pressed
-  const onPointerDown = (event: PointerEvent) => {
-    // Update my cursor position
-    updateMyPresence({
-      cursor: {
-        x: Math.round(event.clientX),
-        y: Math.round(event.clientY),
-      },
-    });
-    // If the cursor is in reaction mode, set isPressed to true to start adding reactions
-    setState((state) =>
-      state.mode === CursorMode.Reaction ? { ...state, isPressed: true } : state
-    );
-  };
+  const onPointerDown = useCallback(
+    (event: PointerEvent) => {
+      // Update my cursor position
+      updateMyPresence({
+        cursor: {
+          x: Math.round(event.clientX),
+          y: Math.round(event.clientY),
+        },
+      });
+      // If the cursor is in reaction mode, set isPressed to true to start adding reactions
+      setState((state) =>
+        state.mode === CursorMode.Reaction
+          ? { ...state, isPressed: true }
+          : state
+      );
+    },
+    [updateMyPresence]
+  );
 
   // When the pointer is released
-  const onPointerUp = () => {
+  const onPointerUp = useCallback(() => {
     // If the cursor is in reaction mode, set isPressed to false to stop adding reactions
     setState((state) =>
       state.mode === CursorMode.Reaction
         ? { ...state, isPressed: false }
         : state
     );
-  };
+  }, []);
 
   // Listen to reaction events broadcasted by other users and add them to the reactions array
   useEventListener((eventData) => {

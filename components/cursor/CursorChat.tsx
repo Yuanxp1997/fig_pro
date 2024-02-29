@@ -8,6 +8,33 @@ const CursorChat = ({
   updateMyPresence,
   setState,
 }: CursorChatProps) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    updateMyPresence({ message: e.target.value });
+    setState({
+      ...state,
+      mode: CursorMode.Chat,
+      previousMessage: null,
+      message: e.target.value,
+    });
+  };
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      setState({
+        ...state,
+        mode: CursorMode.Chat,
+        previousMessage: state.message,
+        message: "",
+      });
+    } else if (e.key === "Escape") {
+      setState({
+        mode: CursorMode.Hidden,
+        message: "",
+        previousMessage: null,
+        reaction: "",
+        isPressed: false,
+      });
+    }
+  };
   return (
     <div
       className="absolute top-0 left-0"
@@ -26,33 +53,8 @@ const CursorChat = ({
         <input
           className="w-60 border-none	bg-transparent text-white placeholder-blue-300 outline-none"
           autoFocus={true}
-          onChange={(e) => {
-            updateMyPresence({ message: e.target.value });
-            setState({
-              ...state,
-              mode: CursorMode.Chat,
-              previousMessage: null,
-              message: e.target.value,
-            });
-          }}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              setState({
-                ...state,
-                mode: CursorMode.Chat,
-                previousMessage: state.message,
-                message: "",
-              });
-            } else if (e.key === "Escape") {
-              setState({
-                mode: CursorMode.Hidden,
-                message: "",
-                previousMessage: null,
-                reaction: "",
-                isPressed: false,
-              });
-            }
-          }}
+          onChange={handleChange}
+          onKeyDown={handleKeyDown}
           placeholder={state.previousMessage ? "" : "Say something…"}
           value={state.message}
           maxLength={50}
