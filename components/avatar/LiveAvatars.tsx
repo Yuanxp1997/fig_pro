@@ -4,6 +4,7 @@ import { useOthersMapped, useSelf } from "@/liveblocks.config";
 import { AnimatePresence, motion } from "framer-motion";
 import { COLORS } from "@/constants";
 import { getLightenHexColor } from "@/utils/getLightenColor";
+import { generateRandomName } from "@/lib/utils";
 
 /**
  * This file shows how to add live avatars like you can see them at the top right of a Google Doc or a Figma file.
@@ -71,15 +72,23 @@ export default function LiveAvatars() {
         {others
           .slice(0, MAX_OTHERS)
           .reverse()
-          .map(([key, info]) => (
-            <motion.div key={key} {...animationProps}></motion.div>
+          .map(([key, id]) => (
+            <motion.div key={key} {...animationProps}>
+              <Avatar
+                {...avatarProps}
+                color={[
+                  getLightenHexColor(COLORS[id % COLORS.length], 100),
+                  COLORS[id % COLORS.length],
+                ]}
+              />
+            </motion.div>
           ))}
 
         {currentUser ? (
           <motion.div key="you" {...animationProps}>
             <Avatar
               {...avatarProps}
-              name={"you"}
+              name={"You"}
               color={[
                 getLightenHexColor(
                   COLORS[currentUser.connectionId % COLORS.length],

@@ -113,7 +113,7 @@ function LetterCircle({
       className={styles.letter}
     >
       <div className={styles.letterCharacter} style={{ color: textColor }}>
-        {name ? name.charAt(0) : null}
+        {name == "You" ? name : name ? name.charAt(0) : null}
       </div>
     </div>
   );
