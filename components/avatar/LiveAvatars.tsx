@@ -4,7 +4,6 @@ import { useOthersMapped, useSelf } from "@/liveblocks.config";
 import { AnimatePresence, motion } from "framer-motion";
 import { COLORS } from "@/constants";
 import { getLightenHexColor } from "@/utils/getLightenColor";
-import { generateRandomName } from "@/lib/utils";
 
 /**
  * This file shows how to add live avatars like you can see them at the top right of a Google Doc or a Figma file.
@@ -15,8 +14,10 @@ import { generateRandomName } from "@/lib/utils";
  * See pages/api/liveblocks-auth.ts and https://liveblocks.io/docs/api-reference/liveblocks-node#authorize for more information
  */
 
+// The maximum number of avatars for other people to display
 const MAX_OTHERS = 3;
 
+// The animation properties for the avatars
 const animationProps = {
   initial: { width: 0, transformOrigin: "left" },
   animate: { width: "auto", height: "auto" },
@@ -30,6 +31,7 @@ const animationProps = {
   },
 };
 
+// The properties for the avatars
 const avatarProps = {
   style: { marginLeft: "-0.45rem" },
   size: 48,
@@ -63,12 +65,18 @@ export default function LiveAvatars() {
       }}
     >
       <AnimatePresence>
+        {/* first check if there are more users than the maximum number of avatars and display them */}
         {hasMoreUsers ? (
           <motion.div key="count" {...animationProps}>
-            <Avatar {...avatarProps} variant="more" count={others.length - 3} />
+            <Avatar
+              {...avatarProps}
+              variant="more"
+              count={others.length - MAX_OTHERS}
+            />
           </motion.div>
         ) : null}
 
+        {/* then display the avatars of the other users */}
         {others
           .slice(0, MAX_OTHERS)
           .reverse()
@@ -84,6 +92,7 @@ export default function LiveAvatars() {
             </motion.div>
           ))}
 
+        {/* finally display the avatar of the current user so it's always at the right of the other avatars*/}
         {currentUser ? (
           <motion.div key="you" {...animationProps}>
             <Avatar

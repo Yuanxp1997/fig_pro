@@ -4,6 +4,10 @@ import classNames from "classnames";
 import { getContrastingColor } from "@/utils/getContrastingColor";
 import styles from "./Avatars.module.css";
 
+// This component was created by the Liveblocks team
+// These are properties for the avatars
+// most of these are not used in this app
+// but can be helpful if you want to use this component in another app
 type BothProps = {
   variant?: "avatar" | "more";
   size?: number;
@@ -52,7 +56,9 @@ export function Avatar({
   style = {},
   count = 0,
 }: AvatarProps) {
+  // if the variant is avatar and there is no src, use the letter variant
   const innerVariant = variant === "avatar" && !src ? "letter" : variant;
+  // the size of the avatar without the outline, not used in this app
   const realSize = size - outlineWidth * 2;
 
   return (
@@ -68,10 +74,11 @@ export function Avatar({
       className={classNames(styles.avatar, className)}
       data-tooltip={name}
     >
+      {/* if the variant is more, display the more circle with the count */}
       {innerVariant === "more" ? (
         <MoreCircle count={count} borderRadius={borderRadius} />
       ) : null}
-
+      {/* if the variant is avatar, display the picture circle, not used in this app */}
       {innerVariant === "avatar" ? (
         <PictureCircle
           name={name}
@@ -80,11 +87,11 @@ export function Avatar({
           borderRadius={borderRadius}
         />
       ) : null}
-
+      {/* if the variant is letter, display the letter circle */}
       {innerVariant === "letter" ? (
         <LetterCircle name={name} color={color} borderRadius={borderRadius} />
       ) : null}
-
+      {/* if the status color is set, display the status circle not used in this app*/}
       {statusColor ? (
         <span
           style={{ backgroundColor: statusColor }}
@@ -95,6 +102,7 @@ export function Avatar({
   );
 }
 
+// This returns the letter circle component
 function LetterCircle({
   name,
   color,
@@ -119,6 +127,7 @@ function LetterCircle({
   );
 }
 
+// This returns the picture circle component
 function PictureCircle({
   name,
   src = "",
@@ -136,6 +145,7 @@ function PictureCircle({
   );
 }
 
+// This returns the more circle component
 function MoreCircle({
   count,
   borderRadius,

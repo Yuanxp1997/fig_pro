@@ -8,6 +8,7 @@ const CursorChat = ({
   updateMyPresence,
   setState,
 }: CursorChatProps) => {
+  // Update the message in the presence object when the input changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     updateMyPresence({ message: e.target.value });
     setState({
@@ -17,6 +18,7 @@ const CursorChat = ({
       message: e.target.value,
     });
   };
+  // Handle the keydown event to send the message or close the chat
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       setState({
@@ -49,7 +51,9 @@ const CursorChat = ({
           borderRadius: 20,
         }}
       >
+        {/* if there is a previous message, display it */}
         {state.previousMessage && <div>{state.previousMessage}</div>}
+        {/* input to type the message is under the previous message */}
         <input
           className="w-60 border-none	bg-transparent text-white placeholder-blue-300 outline-none"
           autoFocus={true}
