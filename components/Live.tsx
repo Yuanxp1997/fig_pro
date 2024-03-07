@@ -192,7 +192,7 @@ const Live = () => {
   });
   return (
     <main
-      className="h-[100vh] w-full text-white flex items-center justify-center "
+      className="h-full flex-1 text-white flex items-center justify-center"
       onPointerMove={onPointerMove}
       onPointerLeave={onPointerLeave}
       onPointerDown={onPointerDown}
