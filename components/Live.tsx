@@ -5,7 +5,13 @@ import {
   useMyPresence,
   useOthers,
 } from "@/liveblocks.config";
-import React, { PointerEvent, useCallback, useEffect, useState } from "react";
+import React, {
+  MutableRefObject,
+  PointerEvent,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import OthersCursors from "./cursor/OthersCursors";
 import { CursorMode, CursorState, Reaction, ReactionEvent } from "@/types/type";
 import useInterval from "@/hooks/useInterval";
@@ -16,7 +22,11 @@ import Reactions from "./reaction/Reactions";
 import ReactionIndicator from "./reaction/ReactionIndicator";
 import InteractionInstructions from "./InteractionInstructions";
 
-const Live = () => {
+const Live = ({
+  canvasRef,
+}: {
+  canvasRef: MutableRefObject<HTMLCanvasElement | null>;
+}) => {
   /**
    * useMyPresence returns the presence of the current user and a function to update it.
    * updateMyPresence is different than the setState function returned by the useState hook from React.
@@ -192,18 +202,19 @@ const Live = () => {
   });
   return (
     <main
+      id="canvas"
       className="h-full flex-1 text-white flex items-center justify-center"
       onPointerMove={onPointerMove}
       onPointerLeave={onPointerLeave}
       onPointerDown={onPointerDown}
       onPointerUp={onPointerUp}
-      style={{ cursor: "none" }}
     >
+      <canvas ref={canvasRef} />
       {
         /* show my custom cursor */
-        cursor && (
-          <Cursor color="black" x={cursor.x} y={cursor.y} z={100} message="" />
-        )
+        // cursor && (
+        //   <Cursor color="black" x={cursor.x} y={cursor.y} z={100} message="" />
+        // )
       }
 
       {
