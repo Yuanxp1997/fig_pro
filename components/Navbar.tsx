@@ -44,7 +44,10 @@ const Navbar = ({
           >
             {Array.isArray(item.value) ? (
               <ShapesMenu
-                item={item}
+                item={{
+                  ...item,
+                  value: Array.isArray(item.value) ? item.value : [item.value],
+                }}
                 activeElement={activeElement}
                 handleActiveElement={handleActiveElement}
                 imageInputRef={imageInputRef}

@@ -50,7 +50,7 @@ export const handleCanvasMouseDown = ({
 
   /**
    * get target object i.e., the object that is clicked
-   * findtarget() returns the object that is clicked
+   * findTarget() returns the object that is clicked
    *
    * findTarget: http://fabricjs.com/docs/fabric.Canvas.html#findTarget
    */
@@ -103,7 +103,7 @@ export const handleCanvasMouseDown = ({
 };
 
 // handle mouse move event on canvas to draw shapes with different dimensions
-export const handleCanvaseMouseMove = ({
+export const handleCanvasMouseMove = ({
   options,
   canvas,
   isDrawing,
