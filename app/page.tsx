@@ -21,12 +21,14 @@ import {
   renderCanvas,
 } from "@/lib/canvas";
 import { ActiveElement, Attributes } from "@/types/type";
-import { useMutation, useStorage } from "@/liveblocks.config";
+import { useMutation, useRedo, useStorage, useUndo } from "@/liveblocks.config";
 import { defaultNavElement } from "@/constants";
 import { handleImageUpload } from "@/lib/shapes";
-import { handleDelete } from "@/lib/key-events";
+import { handleDelete, handleKeyDown } from "@/lib/key-events";
 
 export default function Home() {
+  const undo = useUndo();
+  const redo = useRedo();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fabricRef = useRef<fabric.Canvas | null>(null);
   const isDrawing = useRef(false);
@@ -104,14 +106,8 @@ export default function Home() {
         break;
       case "image":
         imageInputRef.current?.click();
-        /**
-         * set drawing mode to false
-         * If the user is drawing on the canvas, we want to stop the
-         * drawing mode when clicked on the image item from the dropdown.
-         */
         isDrawing.current = false;
         if (fabricRef.current) {
-          // disable the drawing mode of canvas
           fabricRef.current.isDrawingMode = false;
         }
         break;
@@ -244,13 +240,33 @@ export default function Home() {
     window.addEventListener("resize", () => {
       handleResize({ canvas });
     });
+    window.addEventListener("keydown", (e) =>
+      handleKeyDown({
+        e,
+        canvas: fabricRef.current,
+        undo,
+        redo,
+        syncShapeInStorage,
+        deleteShapeFromStorage,
+      })
+    );
     return () => {
-      window.removeEventListener("resize", () => {
-        handleResize({ canvas });
-      });
       canvas.dispose();
+      window.removeEventListener("resize", () => {
+        handleResize({ canvas: null });
+      });
+      window.removeEventListener("keydown", (e) =>
+        handleKeyDown({
+          e,
+          canvas: canvas,
+          undo,
+          redo,
+          syncShapeInStorage,
+          deleteShapeFromStorage,
+        })
+      );
     };
-  }, [syncShapeInStorage]);
+  }, [syncShapeInStorage, canvasRef, deleteShapeFromStorage, redo, undo]);
   // render the canvas when the canvasObjects from live storage changes
   useEffect(() => {
     renderCanvas({
@@ -259,16 +275,31 @@ export default function Home() {
       activeObjectRef,
     });
   }, [canvasObjects]);
+
   return (
     <div className="h-[100vh] flex flex-col w-full">
       <Navbar
         activeElement={activeElement}
         handleActiveElement={handleActiveElement}
         imageInputRef={imageInputRef}
-        handleImageUpload={handleImageUpload}
+        handleImageUpload={(e) => {
+          e.stopPropagation();
+          if (e.target.files) {
+            handleImageUpload({
+              file: e.target.files[0],
+              canvas: fabricRef as any,
+              shapeRef,
+              syncShapeInStorage,
+            });
+          }
+        }}
       />
-      <section className="flex-1  flex">
-        <SidebarLeft />
+      <section className="flex flex-row flex-1">
+        <SidebarLeft
+          allShapes={Array.from(canvasObjects)}
+          redo={redo}
+          undo={undo}
+        />
         <Live canvasRef={canvasRef} />
         <SidebarRight />
       </section>
