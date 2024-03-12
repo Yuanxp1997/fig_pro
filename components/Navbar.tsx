@@ -6,7 +6,6 @@ import { navElements } from "@/constants";
 import { Button } from "./ui/button";
 import { ActiveElement, NavbarProps } from "@/types/type";
 import ShapesMenu from "./ShapesMenu";
-import { NewThread } from "./comments/NewThread";
 
 const Navbar = ({
   activeElement,
@@ -53,24 +52,11 @@ const Navbar = ({
                 imageInputRef={imageInputRef}
                 handleImageUpload={handleImageUpload}
               />
-            ) : item.name === "Comments" ? (
-              <NewThread>
-                <Button className="relative w-5 h-5 object-contain">
-                  <Image
-                    src={item.icon}
-                    alt={item.name}
-                    fill
-                    className={isActive(item.value) ? "invert" : ""}
-                  />
-                </Button>
-              </NewThread>
             ) : (
               <Button
                 className={
                   item.name === "Reset"
-                    ? "relative w-4 h-5 object-contain"
-                    : Array.isArray(item.value)
-                    ? "relative w-5 h-5 object-contain"
+                    ? "relative w-4 h-4 object-contain"
                     : "relative w-5 h-5 object-contain"
                 }
               >

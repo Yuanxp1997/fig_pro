@@ -27,7 +27,7 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from "./ui/context-menu";
-import { Comments } from "./comments/Comments";
+
 import { shortcuts } from "@/constants";
 
 const Live = ({
