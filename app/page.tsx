@@ -300,7 +300,7 @@ export default function Home() {
           redo={redo}
           undo={undo}
         />
-        <Live canvasRef={canvasRef} />
+        <Live canvasRef={canvasRef} redo={redo} undo={undo} />
         <SidebarRight
           elementAttributes={elementAttributes}
           setElementAttributes={setElementAttributes}

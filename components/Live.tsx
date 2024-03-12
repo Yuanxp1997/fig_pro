@@ -21,11 +21,25 @@ import Cursor from "./cursor/Cursor";
 import Reactions from "./reaction/Reactions";
 import ReactionIndicator from "./reaction/ReactionIndicator";
 import InteractionInstructions from "./InteractionInstructions";
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger,
+} from "./ui/context-menu";
+import { Comments } from "./comments/Comments";
+import { shortcuts } from "@/constants";
 
 const Live = ({
   canvasRef,
+
+  undo,
+  redo,
 }: {
   canvasRef: MutableRefObject<HTMLCanvasElement | null>;
+
+  undo: () => void;
+  redo: () => void;
 }) => {
   /**
    * useMyPresence returns the presence of the current user and a function to update it.
@@ -200,61 +214,110 @@ const Live = ({
       ])
     );
   });
+  const handleContextMenuClick = useCallback(
+    (key: string) => {
+      switch (key) {
+        case "Chat":
+          setState((state) => ({
+            ...state,
+            mode: CursorMode.Chat,
+            previousMessage: null,
+            message: "",
+          }));
+          break;
+
+        case "Reactions":
+          setState((state) => ({
+            ...state,
+            mode: CursorMode.ReactionSelector,
+            previousMessage: null,
+            message: "",
+          }));
+          break;
+
+        case "Undo":
+          undo();
+          break;
+
+        case "Redo":
+          redo();
+          break;
+
+        default:
+          break;
+      }
+    },
+    [redo, undo]
+  );
+
   return (
-    <main
-      id="canvas"
-      className="h-full flex-1 text-white flex items-center justify-center"
-      onPointerMove={onPointerMove}
-      onPointerLeave={onPointerLeave}
-      onPointerDown={onPointerDown}
-      onPointerUp={onPointerUp}
-    >
-      <canvas ref={canvasRef} />
-      {
-        /* show my custom cursor */
-        // cursor && (
-        //   <Cursor color="black" x={cursor.x} y={cursor.y} z={100} message="" />
-        // )
-      }
+    <ContextMenu>
+      <ContextMenuTrigger
+        id="canvas"
+        className="relative h-full w-full flex-1 flex items-center justify-center"
+        onPointerMove={onPointerMove}
+        onPointerLeave={onPointerLeave}
+        onPointerDown={onPointerDown}
+        onPointerUp={onPointerUp}
+      >
+        <canvas ref={canvasRef} />
+        {
+          /* show my custom cursor */
+          // cursor && (
+          //   <Cursor color="black" x={cursor.x} y={cursor.y} z={100} message="" />
+          // )
+        }
 
-      {
-        /* display the chat input next to the user's cursor */
-        cursor && state.mode === CursorMode.Chat && (
-          <CursorChat
-            cursor={cursor}
-            state={state}
-            updateMyPresence={updateMyPresence}
-            setState={setState}
-          />
-        )
-      }
-      {
-        /* display the reaction selector at the user's cursor */
-        cursor && state.mode === CursorMode.ReactionSelector && (
-          <ReactionSelector
-            cursor={cursor}
-            setReaction={(reaction) => {
-              setReaction(reaction);
-            }}
-          />
-        )
-      }
-      {
-        /* display the reaction next to the user's cursor after it's selected from reaction selector */
-        cursor && state.mode === CursorMode.Reaction && (
-          <ReactionIndicator cursor={cursor} reaction={state.reaction} />
-        )
-      }
+        {
+          /* display the chat input next to the user's cursor */
+          cursor && state.mode === CursorMode.Chat && (
+            <CursorChat
+              cursor={cursor}
+              state={state}
+              updateMyPresence={updateMyPresence}
+              setState={setState}
+            />
+          )
+        }
+        {
+          /* display the reaction selector at the user's cursor */
+          cursor && state.mode === CursorMode.ReactionSelector && (
+            <ReactionSelector
+              cursor={cursor}
+              setReaction={(reaction) => {
+                setReaction(reaction);
+              }}
+            />
+          )
+        }
+        {
+          /* display the reaction next to the user's cursor after it's selected from reaction selector */
+          cursor && state.mode === CursorMode.Reaction && (
+            <ReactionIndicator cursor={cursor} reaction={state.reaction} />
+          )
+        }
 
-      {/* show other people's cursors */}
-      <OthersCursors others={others} />
+        {/* show other people's cursors */}
+        <OthersCursors others={others} />
 
-      {
-        /* show reactions on the screen */
-        <Reactions reactions={reactions} />
-      }
-      <InteractionInstructions />
-    </main>
+        {
+          /* show reactions on the screen */
+          <Reactions reactions={reactions} />
+        }
+        <InteractionInstructions />
+      </ContextMenuTrigger>
+      <ContextMenuContent className="right-menu-content">
+        {shortcuts.map((shortcut) => (
+          <ContextMenuItem
+            key={shortcut.key}
+            onClick={() => handleContextMenuClick(shortcut.name)}
+            className="right-menu-item"
+          >
+            {shortcut.name} : {shortcut.shortcut}
+          </ContextMenuItem>
+        ))}
+      </ContextMenuContent>
+    </ContextMenu>
   );
 };
 
