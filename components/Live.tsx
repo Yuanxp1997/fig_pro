@@ -47,7 +47,7 @@ const Live = ({
    * You don't need to pass the full presence object to update it.
    * See https://liveblocks.io/docs/api-reference/liveblocks-react#useMyPresence for more information
    */
-  const [{ cursor }, updateMyPresence] = useMyPresence() as any;
+  const [{ cursor }, updateMyPresence] = useMyPresence();
 
   /**
    * Return all the other users in the room and their presence (a cursor position in this case)
