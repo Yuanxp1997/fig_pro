@@ -41,7 +41,7 @@ const SidebarLeft = ({ allShapes, redo, undo }: Props) => {
         </div>
       </section>
     ),
-    [allShapes]
+    [allShapes, redo, undo]
   );
 
   return memoizedShapes;

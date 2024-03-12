@@ -75,7 +75,7 @@ const RightSidebar = ({
         <Export />
       </section>
     ),
-    [elementAttributes]
+    [elementAttributes, handleInputChange, isEditingRef]
   ); // only re-render when elementAttributes changes
 
   return memoizedContent;
