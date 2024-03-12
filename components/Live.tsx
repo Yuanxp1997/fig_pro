@@ -146,8 +146,12 @@ const Live = ({
       if (state.mode !== CursorMode.ReactionSelector) {
         updateMyPresence({
           cursor: {
-            x: Math.round(event.clientX),
-            y: Math.round(event.clientY),
+            x: Math.round(
+              event.clientX - event.currentTarget.getBoundingClientRect().left
+            ),
+            y: Math.round(
+              event.clientY - event.currentTarget.getBoundingClientRect().top
+            ),
           },
         });
       }
@@ -177,8 +181,12 @@ const Live = ({
       // Update my cursor position
       updateMyPresence({
         cursor: {
-          x: Math.round(event.clientX),
-          y: Math.round(event.clientY),
+          x: Math.round(
+            event.clientX - event.currentTarget.getBoundingClientRect().left
+          ),
+          y: Math.round(
+            event.clientY - event.currentTarget.getBoundingClientRect().top
+          ),
         },
       });
       // If the cursor is in reaction mode, set isPressed to true to start adding reactions
