@@ -4,18 +4,15 @@ import Image from "next/image";
 import React, { useMemo } from "react";
 import { Button } from "./ui/button";
 
-type Props = { allShapes: Array<any>; redo: () => void; undo: () => void };
-const SidebarLeft = ({ allShapes, redo, undo }: Props) => {
+type Props = { allShapes: Array<any> };
+const SidebarLeft = ({ allShapes }: Props) => {
   const memoizedShapes = useMemo(
     () => (
       <section className="flex flex-col border-t border-primary-grey-200 bg-primary-black text-primary-grey-300 min-w-[227px] sticky left-0 h-full max-lg:hidden select-none overflow-y-auto pb-20">
         <h3 className="border border-primary-grey-200 px-5 py-4 text-xs uppercase">
           Layers
         </h3>
-        <div>
-          <Button onClick={undo}>Undo</Button>
-          <Button onClick={redo}>Redo</Button>
-        </div>
+
         <div className="flex flex-col">
           {allShapes?.map((shape: any) => {
             const info = getShapeInfo(shape[1]?.type);
@@ -41,7 +38,7 @@ const SidebarLeft = ({ allShapes, redo, undo }: Props) => {
         </div>
       </section>
     ),
-    [allShapes, redo, undo]
+    [allShapes]
   );
 
   return memoizedShapes;

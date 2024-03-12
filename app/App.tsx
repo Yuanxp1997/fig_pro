@@ -295,11 +295,7 @@ export default function Home() {
         }}
       />
       <section className="flex flex-row flex-1">
-        <SidebarLeft
-          allShapes={Array.from(canvasObjects)}
-          redo={redo}
-          undo={undo}
-        />
+        <SidebarLeft allShapes={Array.from(canvasObjects)} />
         <Live canvasRef={canvasRef} redo={redo} undo={undo} />
         <SidebarRight
           elementAttributes={elementAttributes}
@@ -308,6 +304,8 @@ export default function Home() {
           isEditingRef={isEditingRef}
           activeObjectRef={activeObjectRef}
           syncShapeInStorage={syncShapeInStorage}
+          redo={redo}
+          undo={undo}
         />
       </section>
     </div>

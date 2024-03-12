@@ -91,6 +91,8 @@ export type RightSidebarProps = {
   activeObjectRef: React.RefObject<fabric.Object | null>;
   isEditingRef: React.MutableRefObject<boolean>;
   syncShapeInStorage: (obj: any) => void;
+  redo: () => void;
+  undo: () => void;
 };
 
 export type NavbarProps = {
