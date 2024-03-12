@@ -9,7 +9,10 @@ export function Room({ children }: { children: ReactNode }) {
   return (
     <RoomProvider
       id="my-room"
-      initialPresence={{}}
+      initialPresence={{
+        cursor: null,
+        message: null,
+      }}
       initialStorage={{ canvasObjects: new LiveMap() }}
     >
       <ClientSideSuspense fallback={<div>Loading…</div>}>
