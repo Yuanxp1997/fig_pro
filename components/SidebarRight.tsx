@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from "react";
+import React, { useCallback, useMemo, useRef } from "react";
 
 import { RightSidebarProps } from "@/types/type";
 import { bringElement, modifyShape } from "@/lib/shapes";
@@ -19,19 +19,28 @@ const RightSidebar = ({
   const colorInputRef = useRef(null);
   const strokeInputRef = useRef(null);
 
-  const handleInputChange = (property: string, value: string) => {
-    if (!isEditingRef.current) isEditingRef.current = true;
+  const handleInputChange = useCallback(
+    (property: string, value: string) => {
+      if (!isEditingRef.current) isEditingRef.current = true;
 
-    setElementAttributes((prev) => ({ ...prev, [property]: value }));
+      setElementAttributes((prev) => ({ ...prev, [property]: value }));
 
-    modifyShape({
-      canvas: fabricRef.current as fabric.Canvas,
-      property,
-      value,
+      modifyShape({
+        canvas: fabricRef.current as fabric.Canvas,
+        property,
+        value,
+        activeObjectRef,
+        syncShapeInStorage,
+      });
+    },
+    [
       activeObjectRef,
+      fabricRef,
+      isEditingRef,
+      setElementAttributes,
       syncShapeInStorage,
-    });
-  };
+    ]
+  );
 
   // memoize the content of the right sidebar to avoid re-rendering on every mouse actions
   const memoizedContent = useMemo(
