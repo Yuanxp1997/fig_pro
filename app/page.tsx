@@ -301,7 +301,14 @@ export default function Home() {
           undo={undo}
         />
         <Live canvasRef={canvasRef} />
-        <SidebarRight />
+        <SidebarRight
+          elementAttributes={elementAttributes}
+          setElementAttributes={setElementAttributes}
+          fabricRef={fabricRef}
+          isEditingRef={isEditingRef}
+          activeObjectRef={activeObjectRef}
+          syncShapeInStorage={syncShapeInStorage}
+        />
       </section>
     </div>
   );
