@@ -25,6 +25,7 @@ import { useMutation, useRedo, useStorage, useUndo } from "@/liveblocks.config";
 import { defaultNavElement } from "@/constants";
 import { handleImageUpload } from "@/lib/shapes";
 import { handleDelete, handleKeyDown } from "@/lib/key-events";
+import InteractionInstructions from "@/components/InteractionInstructions";
 
 export default function Home() {
   const undo = useUndo();
@@ -308,6 +309,7 @@ export default function Home() {
           undo={undo}
         />
       </section>
+      <InteractionInstructions />
     </div>
   );
 }

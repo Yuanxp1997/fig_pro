@@ -312,7 +312,6 @@ const Live = ({
           /* show reactions on the screen */
           <Reactions reactions={reactions} />
         }
-        <InteractionInstructions />
       </ContextMenuTrigger>
       <ContextMenuContent className="right-menu-content">
         {shortcuts.map((shortcut) => (
